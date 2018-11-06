@@ -1,0 +1,12 @@
+*.exe
+*.ini
+*.csv
+*.xls
+*.xlsx
+*.json
+/.idea
+/vendor
+*.zip
+*.zip.*
+/pkg
+/src/
