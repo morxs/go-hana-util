@@ -20,6 +20,19 @@ The tools consist of:
 
 I have a lot of queries regarding HANA information due to my unspecific job of BI. I tired to query again and again which someone usually can simply run certain SQL on sql console to get those information.
 
+## USAGE
+
+1. Copy/Rename config.ini.sample become config.ini
+2. Edit config.ini, fill in the respecting information inside this file and save
+```ini
+host = 10.0.0.1
+uid = SAMPLEUSER
+pwd = Y0urP@ssw0rd
+port = 30015
+```
+3. Compile this project
+4. Run the binary
+
 ## THANKS TO
 
 - github.com/SAP/go-hdb/driver (special thanks to SAP to bring HANA driver to Go)
