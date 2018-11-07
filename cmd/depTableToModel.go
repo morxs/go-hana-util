@@ -23,16 +23,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	depTableToModelObjSQL = `SELECT DISTINCT
-LEFT(DEPENDENT_OBJECT_NAME, locate(DEPENDENT_OBJECT_NAME,'::' ) -1) as "Package Name"
-, RIGHT(DEPENDENT_OBJECT_NAME, length(DEPENDENT_OBJECT_NAME) - locate(DEPENDENT_OBJECT_NAME,'::')-1) as "Model Name"
-FROM     "SYS" ."OBJECT_DEPENDENCIES"
-WHERE BASE_OBJECT_NAME = ?
-AND DEPENDENT_SCHEMA_NAME = 'PUBLIC'
-AND LEFT (DEPENDENT_OBJECT_NAME, LOCATE(DEPENDENT_OBJECT_NAME, '::') -1) <> ''`
-)
-
 var tableName string
 
 // depTableToModelCmd represents the depTableToModel command
@@ -46,6 +36,15 @@ var depTableToModelCmd = &cobra.Command{
 	Use format: 
 	depTableToModel -t <table_name>`,
 	Run: func(cmd *cobra.Command, args []string) {
+		const (
+			depTableToModelObjSQL = `SELECT DISTINCT
+LEFT(DEPENDENT_OBJECT_NAME, locate(DEPENDENT_OBJECT_NAME,'::' ) -1) as "Package Name"
+, RIGHT(DEPENDENT_OBJECT_NAME, length(DEPENDENT_OBJECT_NAME) - locate(DEPENDENT_OBJECT_NAME,'::')-1) as "Model Name"
+FROM     "SYS" ."OBJECT_DEPENDENCIES"
+WHERE BASE_OBJECT_NAME = ?
+AND DEPENDENT_SCHEMA_NAME = 'PUBLIC'
+AND LEFT (DEPENDENT_OBJECT_NAME, LOCATE(DEPENDENT_OBJECT_NAME, '::') -1) <> ''`
+		)
 		// fmt.Println("depTableToModel called")
 		hdbDsn, err := utils.ReadConfig(sCfg)
 		if err != nil {

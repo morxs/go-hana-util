@@ -26,22 +26,21 @@ import (
 	_ "github.com/SAP/go-hdb/driver"
 )
 
-const (
-	listUserDeactivatedSQL = `SELECT
-USER_NAME, 
-PASSWORD_CHANGE_NEEDED, 
-USER_DEACTIVATED
-FROM "SYS"."USERS"
-WHERE ( USER_DEACTIVATED='TRUE' 
-OR PASSWORD_CHANGE_NEEDED='TRUE')`
-)
-
 // listUserDeactivatedCmd represents the listUserDeactivated command
 var listUserDeactivatedCmd = &cobra.Command{
 	Use:   "listUserDeactivated",
 	Short: "List Deactivated Users",
 	Long:  `List all deactivated users, maybe due to incorrect password attempt or locked`,
 	Run: func(cmd *cobra.Command, args []string) {
+		const (
+			listUserDeactivatedSQL = `SELECT
+USER_NAME, 
+PASSWORD_CHANGE_NEEDED, 
+USER_DEACTIVATED
+FROM "SYS"."USERS"
+WHERE ( USER_DEACTIVATED='TRUE' 
+OR PASSWORD_CHANGE_NEEDED='TRUE')`
+		)
 		// fmt.Println("listUserDeactivated called")
 		// fmt.Println("Config file: ", sCfg)
 		hdbDsn, err := utils.ReadConfig(sCfg)

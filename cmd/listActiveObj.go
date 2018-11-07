@@ -23,21 +23,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	listActiveObjSQL = `SELECT PACKAGE_ID, OBJECT_NAME, OBJECT_SUFFIX FROM "_SYS_REPO"."ACTIVE_OBJECT"
-	WHERE "OBJECT_SUFFIX" = 'attributeview'
-	OR "OBJECT_SUFFIX" = 'analyticview'
-	OR "OBJECT_SUFFIX" = 'calculationview'
-	ORDER BY PACKAGE_ID`
-)
-
 // listActiveObjCmd represents the listActiveObj command
 var listActiveObjCmd = &cobra.Command{
 	Use:   "listActiveObj",
 	Short: "List activate objects on HANA repository",
 	Long:  `To list out all already active objects on HANA repositories`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println("listActiveObj called")
+		const (
+			listActiveObjSQL = `SELECT PACKAGE_ID, OBJECT_NAME, OBJECT_SUFFIX FROM "_SYS_REPO"."ACTIVE_OBJECT"
+WHERE "OBJECT_SUFFIX" = 'attributeview'
+OR "OBJECT_SUFFIX" = 'analyticview'
+OR "OBJECT_SUFFIX" = 'calculationview'
+ORDER BY PACKAGE_ID`
+		) // fmt.Println("listActiveObj called")
 		hdbDsn, err := utils.ReadConfig(sCfg)
 		if err != nil {
 			log.Fatal(err)

@@ -23,14 +23,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	listInactiveObjSQL = `SELECT PACKAGE_ID, OBJECT_NAME, OBJECT_SUFFIX FROM "_SYS_REPO"."INACTIVE_OBJECT"
-	WHERE "OBJECT_SUFFIX" = 'attributeview'
-	OR "OBJECT_SUFFIX" = 'analyticview'
-	OR "OBJECT_SUFFIX" = 'calculationview'
-	ORDER BY PACKAGE_ID`
-)
-
 // listInactiveObjCmd represents the listInactiveObj command
 var listInactiveObjCmd = &cobra.Command{
 	Use:   "listInactiveObj",
@@ -38,7 +30,13 @@ var listInactiveObjCmd = &cobra.Command{
 	Long: `To list out all inactive objects on HANA repositories. 
 	This can come in handy when you need to troubleshoot transport problem on HANA 2.0`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println("listInactiveObj called")
+		const (
+			listInactiveObjSQL = `SELECT PACKAGE_ID, OBJECT_NAME, OBJECT_SUFFIX FROM "_SYS_REPO"."INACTIVE_OBJECT"
+WHERE "OBJECT_SUFFIX" = 'attributeview'
+OR "OBJECT_SUFFIX" = 'analyticview'
+OR "OBJECT_SUFFIX" = 'calculationview'
+ORDER BY PACKAGE_ID`
+		) // fmt.Println("listInactiveObj called")
 		hdbDsn, err := utils.ReadConfig(sCfg)
 		if err != nil {
 			log.Fatal(err)

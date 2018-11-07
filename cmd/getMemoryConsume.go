@@ -23,26 +23,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	getMemoryConsumeSQL = `SELECT TOP 1000
-	TABLE_NAME,
-	MEMORY_SIZE_IN_TOTAL,
-	MEMORY_SIZE_IN_MAIN,
-	MEMORY_SIZE_IN_DELTA,
-	ESTIMATED_MAX_MEMORY_SIZE_IN_TOTAL,
-	RECORD_COUNT
-	FROM M_CS_TABLES
-	WHERE SCHEMA_NAME = 'SAPABAP1'
-	AND TABLE_NAME not like '/%'
-	ORDER BY MEMORY_SIZE_IN_TOTAL DESC`
-)
-
 // getMemoryConsumeCmd represents the getMemoryConsume command
 var getMemoryConsumeCmd = &cobra.Command{
 	Use:   "getMemoryConsume",
-	Short: "Get HANA Memory Consumption",
-	Long:  `Get full memory overview, delta and consumption to monitor HANA resource`,
+	Short: "Get HANA Memory Consumption per table",
+	Long: `Get full memory overview, delta and consumption to monitor HANA resource.
+Note: Only top 1000 hit are returned. If you are query on SOH or S/4HANA, records
+can reach 100K (exc. /*).`,
 	Run: func(cmd *cobra.Command, args []string) {
+		const (
+			getMemoryConsumeSQL = `SELECT TOP 1000
+TABLE_NAME,
+MEMORY_SIZE_IN_TOTAL,
+MEMORY_SIZE_IN_MAIN,
+MEMORY_SIZE_IN_DELTA,
+ESTIMATED_MAX_MEMORY_SIZE_IN_TOTAL,
+RECORD_COUNT
+FROM M_CS_TABLES
+WHERE SCHEMA_NAME = 'SAPABAP1'
+AND TABLE_NAME not like '/%'
+ORDER BY MEMORY_SIZE_IN_TOTAL DESC`
+		)
+
 		// fmt.Println("getMemoryConsume called")
 		hdbDsn, err := utils.ReadConfig(sCfg)
 		if err != nil {
