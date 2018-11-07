@@ -28,7 +28,8 @@ var adminCmd = &cobra.Command{
     listUserDeactivated         To get list of Deactivated and Password Change Needed users
     listActiveObj               To get list of activate objects on HANA repository
     listInactiveObj             To get list of inactive objects on HANA repository
-    getMemoryConsume            To get HANA Memory Consumption`,
+    getMemoryConsume            To get HANA Memory Consumption
+    getUserLoginInfo            To get login information`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// fmt.Println("admin called")
 		// fmt.Println(cmd.Short)
