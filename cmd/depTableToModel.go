@@ -70,14 +70,22 @@ AND LEFT (DEPENDENT_OBJECT_NAME, LOCATE(DEPENDENT_OBJECT_NAME, '::') -1) <> ''`
 		defer rows.Close()
 
 		// Write Header
-		fmt.Printf("\n|%-40s|%-60s|\n\n", "PACKAGE", "MODEL_VIEW")
+		if csvMode {
+			fmt.Printf("%0s;%s\n", "PACKAGE", "MODEL_VIEW")
+		} else {
+			fmt.Printf("\n|%-40s|%-60s|\n\n", "PACKAGE", "MODEL_VIEW")
+		}
 		for rows.Next() {
 			var packageName, modelName string
 			if err := rows.Scan(&packageName, &modelName); err != nil {
 				// utils.WriteMsg("SCAN")
 				log.Fatal(err)
 			}
-			fmt.Printf("|%-40s|%-60s|\n", packageName, modelName)
+			if csvMode {
+				fmt.Printf("%s;%s\n", packageName, modelName)
+			} else {
+				fmt.Printf("|%-40s|%-60s|\n", packageName, modelName)
+			}
 		}
 	},
 }

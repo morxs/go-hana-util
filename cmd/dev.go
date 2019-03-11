@@ -18,6 +18,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var csvMode bool
+var packageName, schemaName string
+
 // devCmd represents the dev command
 var devCmd = &cobra.Command{
 	Use:   "dev",
@@ -49,4 +52,19 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// devCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// only for depTableToMode
+	depTableToModelCmd.Flags().BoolVarP(&csvMode, "csv", "m", false, "Printout as csv format")
+
+	// only for depPkgToTable
+	depPkgToTableCmd.Flags().BoolVarP(&csvMode, "csv", "m", false, "Printout as csv format")
+
+	depPkgToTableCmd.Flags().StringVarP(&packageName, "packagename", "p", "", "Package name you want to get dependency (ie. plantation-slowmove)")
+	depPkgToTableCmd.MarkFlagRequired("packagename")
+	depPkgToTableCmd.Flags().StringVarP(&schemaName, "schemaname", "s", "", "Schema name you want to filter")
+
+	// only for listStrucPkgTable
+	listStrucPkgTableCmd.Flags().StringVarP(&packageName, "packagename", "p", "", "Package name you want to get dependency (ie. plantation-slowmove)")
+	listStrucPkgTableCmd.MarkFlagRequired("packagename")
+	listStrucPkgTableCmd.Flags().StringVarP(&schemaName, "schemaname", "s", "", "Schema name you want to filter")
 }

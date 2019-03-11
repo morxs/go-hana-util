@@ -23,8 +23,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var packageNameSPT, schemaNameSPT string
-
 // listStrucPkgTableCmd represents the listStrucPkgTable command
 var listStrucPkgTableCmd = &cobra.Command{
 	Use:   "listStrucPkgTable",
@@ -74,13 +72,13 @@ ORDER BY "PKG_NAME", "MODEL_NAME", BASE_SCHEMA_NAME, BASE_OBJECT_NAME`
 
 		// so manual - construct sql
 		var depPkgToTableSQLComplete string
-		if schemaNameSPT != "" {
-			depPkgToTableSQLComplete = topSQL + innerSQL + schemaSQL + "'" + schemaNameSPT + "'" + bottomSQL
+		if schemaName != "" {
+			depPkgToTableSQLComplete = topSQL + innerSQL + schemaSQL + "'" + schemaName + "'" + bottomSQL
 		} else {
 			depPkgToTableSQLComplete = topSQL + innerSQL + bottomSQL
 		}
 
-		rows, err := db.Query(depPkgToTableSQLComplete, packageNameSPT)
+		rows, err := db.Query(depPkgToTableSQLComplete, packageName)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,8 +111,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// listStrucPkgTableCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	listStrucPkgTableCmd.Flags().StringVarP(&packageNameSPT, "packagename", "p", "", "Package name you want to get dependency (ie. plantation-slowmove)")
-	listStrucPkgTableCmd.MarkFlagRequired("packagename")
-
-	listStrucPkgTableCmd.Flags().StringVarP(&schemaNameSPT, "schemaname", "s", "", "Schema name you want to filter")
 }

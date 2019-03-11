@@ -23,8 +23,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var packageNameDPTT, schemaNameDPTT string
-
 // depPkgToTableCmd represents the depPkgToTable command
 var depPkgToTableCmd = &cobra.Command{
 	Use:   "depPkgToTable",
@@ -69,13 +67,13 @@ AND LEFT(DEPENDENT_OBJECT_NAME, locate(DEPENDENT_OBJECT_NAME, '::') -1) = ?`
 
 		// so manual
 		var depPkgToTableSQLComplete string
-		if schemaNameDPTT != "" {
-			depPkgToTableSQLComplete = depPkgToTableSQL + schemaSQL + "'" + schemaNameDPTT + "'"
+		if schemaName != "" {
+			depPkgToTableSQLComplete = depPkgToTableSQL + schemaSQL + "'" + schemaName + "'"
 		} else {
 			depPkgToTableSQLComplete = depPkgToTableSQL
 		}
 
-		rows, err := db.Query(depPkgToTableSQLComplete, packageNameDPTT)
+		rows, err := db.Query(depPkgToTableSQLComplete, packageName)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -84,14 +82,22 @@ AND LEFT(DEPENDENT_OBJECT_NAME, locate(DEPENDENT_OBJECT_NAME, '::') -1) = ?`
 		// fmt.Println("Parameter:", packageNameDPTT)
 
 		// Write Header
-		fmt.Printf("\n|%-20s|%-60s|\n\n", "SCHEMA_NAME", "TABLE_NAME")
+		if csvMode {
+			fmt.Printf("%0s;%s\n", "SCHEMA_NAME", "TABLE_NAME")
+		} else {
+			fmt.Printf("\n|%-20s|%-60s|\n\n", "SCHEMA_NAME", "TABLE_NAME")
+		}
 		for rows.Next() {
 			var schemaName, tableName string
 			if err := rows.Scan(&schemaName, &tableName); err != nil {
 				// utils.WriteMsg("SCAN")
 				log.Fatal(err)
 			}
-			fmt.Printf("|%-20s|%-60s|\n", schemaName, tableName)
+			if csvMode {
+				fmt.Printf("%s;%s\n", schemaName, tableName)
+			} else {
+				fmt.Printf("|%-20s|%-60s|\n", schemaName, tableName)
+			}
 		}
 	},
 }
@@ -107,8 +113,4 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	depPkgToTableCmd.Flags().StringVarP(&packageNameDPTT, "packagename", "p", "", "Package name you want to get dependency (ie. plantation-slowmove)")
-	depPkgToTableCmd.MarkFlagRequired("packagename")
-
-	depPkgToTableCmd.Flags().StringVarP(&schemaNameDPTT, "schemaname", "s", "", "Schema name you want to filter")
 }
